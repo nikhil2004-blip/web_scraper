@@ -2,11 +2,14 @@ import { NextRequest, NextResponse } from 'next/server';
 import Groq from 'groq-sdk';
 
 export async function POST(request: NextRequest) {
-    try {
-        const body = await request.json();
-        const prompt = body.prompt;
+    let body: any;
+    let userPrompt: string = '';
 
-        if (!prompt) {
+    try {
+        body = await request.json();
+        userPrompt = body.prompt;
+
+        if (!userPrompt) {
             return NextResponse.json({ error: 'Prompt is required' }, { status: 400 });
         }
 
@@ -14,7 +17,7 @@ export async function POST(request: NextRequest) {
 
         if (!apiKey) {
             console.warn('⚠️ No GROQ_API_KEY found. Using Mock AI logic.');
-            return generateMockTheme(prompt);
+            return generateMockTheme(userPrompt);
         }
 
         const groq = new Groq({ apiKey });
@@ -199,7 +202,7 @@ Use these CSS techniques liberally:
 ═══════════════════════════════════════════
 USER'S THEME REQUEST
 ═══════════════════════════════════════════
-Vibe/Description: "${prompt}"
+Vibe/Description: "${userPrompt}"
 
 Now generate the most SPECTACULAR, COMPLETE CSS theme possible for this vibe. 
 Make it so good that someone would pay for it.
@@ -229,11 +232,12 @@ Every line should serve the aesthetic vision. GO ALL OUT.
         return NextResponse.json({ css });
 
     } catch (error: any) {
-        console.error('Groq API Failed:', error.message);
+        console.error('AI theme generation failed:', error.message);
 
+        // Gracefully fall back to mock on quota/auth errors
         if (error.message?.includes('429') || error.message?.includes('quota')) {
             console.warn('⚠️ Quota exceeded — falling back to Mock theme');
-            return generateMockTheme(prompt);
+            return generateMockTheme(userPrompt || 'default theme');
         }
 
         return NextResponse.json(
