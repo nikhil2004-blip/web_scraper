@@ -1,0 +1,242 @@
+/* ULTRA-AUTHENTIC WINDOWS 98 / VAPORWAVE THEME */
+@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
+:root {
+    /* The Classic Palette */
+    --win-teal: #008080;
+    --win-gray: #c0c0c0;
+    --win-gray-light: #dfdfdf;
+    --win-gray-dark: #808080;
+    --win-black: #000000;
+    --win-white: #ffffff;
+    --win-blue-dark: #000080;
+    --win-blue-light: #1084d0;
+}
+
+/* Global Reset & Cursor */
+* {
+    box-sizing: border-box;
+    /* Classic Default Cursor */
+    cursor: url('https://w95-cursor.vercel.app/arrow.png'), auto;
+}
+
+body {
+    background-color: var(--win-teal) !important;
+    /* Authentic Dither Pattern (Checkerboard) */
+    background-image:
+        linear-gradient(45deg, #000 25%, transparent 25%, transparent 75%, #000 75%, #000),
+        linear-gradient(45deg, #000 25%, transparent 25%, transparent 75%, #000 75%, #000);
+    background-size: 2px 2px;
+    background-position: 0 0, 1px 1px;
+    background-blend-mode: overlay;
+    opacity: 1;
+    /* Adjust if too dark */
+
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+    color: var(--win-black);
+    font-size: 14px;
+    line-height: 1.5;
+    padding: 20px;
+}
+
+/* Links */
+a {
+    color: #0000FF !important;
+    text-decoration: underline;
+    cursor: url('https://w95-cursor.vercel.app/pointer.png'), pointer;
+}
+
+a:hover {
+    color: #000080 !important;
+}
+
+/* THE WINDOW CONTAINER (The 3D Box) */
+/* We target semantic tags to turn them into "Windows" */
+section,
+article,
+nav,
+header,
+footer,
+.window,
+[role="dialog"],
+.card {
+    background: var(--win-gray) !important;
+    padding: 4px;
+    /* Padding for the outer rim */
+    margin-bottom: 20px;
+
+    /* The Classic "Outset" Bevel */
+    box-shadow:
+        inset 1px 1px var(--win-white),
+        inset -1px -1px var(--win-gray-dark),
+        1px 1px 0 var(--win-black);
+
+    border: 1px solid var(--win-gray);
+    /* Fallback */
+    position: relative;
+}
+
+/* THE TITLE BAR */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    background: linear-gradient(90deg, var(--win-blue-dark), var(--win-blue-light));
+    color: var(--win-white) !important;
+    padding: 4px 8px;
+    font-family: 'Segoe UI', sans-serif !important;
+    font-weight: bold;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+    margin: 0 0 12px 0;
+
+    /* Flex to allow for "buttons" if you add them later */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    /* Icon Simulation using ::before */
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.5);
+    cursor: default;
+}
+
+/* Simulated "Close" button on the right of headings */
+h1::after,
+h2::after,
+h3::after {
+    content: "X";
+    display: block;
+    background: var(--win-gray);
+    color: #000;
+    font-family: sans-serif;
+    font-size: 11px;
+    line-height: 14px;
+    height: 16px;
+    width: 16px;
+    text-align: center;
+    border: 1px solid #fff;
+    box-shadow: inset -1px -1px #000, inset 1px 1px #fff;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* INPUTS: The "Inset" Look (Sunken) */
+input,
+textarea,
+select {
+    background: var(--win-white) !important;
+    color: #000 !important;
+    font-family: 'Courier New', monospace;
+    /* Monospace for data entry */
+    border: none !important;
+    padding: 6px;
+    outline: none;
+
+    /* The Classic "Inset" Bevel */
+    box-shadow:
+        inset 2px 2px var(--win-gray-dark),
+        inset -1px -1px var(--win-white),
+        inset -2px -2px var(--win-gray-light);
+
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+/* Focus State */
+input:focus,
+textarea:focus,
+select:focus {
+    background: #fff !important;
+}
+
+/* BUTTONS: The "Pop" Look */
+button,
+[type="submit"],
+[role="button"] {
+    background: var(--win-gray) !important;
+    color: #000 !important;
+    font-family: 'MS Sans Serif', Tahoma, sans-serif !important;
+    font-weight: bold;
+    font-size: 13px;
+    padding: 6px 20px;
+    text-align: center;
+
+    border: none !important;
+
+    /* The Classic Button Bevel */
+    box-shadow:
+        inset 1px 1px var(--win-white),
+        inset -1px -1px var(--win-gray-dark),
+        inset -2px -2px 0 var(--win-black);
+
+    margin: 4px;
+    min-width: 80px;
+}
+
+/* Pressed State */
+button:active,
+[type="submit"]:active {
+    /* Invert shadows to look pressed in */
+    box-shadow:
+        inset 1px 1px var(--win-black),
+        inset 2px 2px var(--win-gray-dark);
+    padding: 7px 19px 5px 21px;
+    /* Shift text down-right */
+}
+
+/* Dotted line focus ring */
+button:focus {
+    outline: 1px dotted #000;
+    outline-offset: -6px;
+}
+
+/* IMAGES & MEDIA */
+img,
+video {
+    border: none;
+    padding: 0;
+    /* Sunken frame */
+    box-shadow:
+        inset 2px 2px var(--win-gray-dark),
+        inset -2px -2px var(--win-white),
+        2px 2px 0 var(--win-white),
+        /* Outer Highlight */
+        -1px -1px 0 var(--win-gray-dark);
+    /* Outer Shadow */
+    display: block;
+    max-width: 100%;
+}
+
+/* SCROLLBARS (Webkit only) */
+::-webkit-scrollbar {
+    width: 16px;
+    background: var(--win-gray-light);
+    background-image:
+        linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%, #fff),
+        linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%, #fff);
+    background-size: 2px 2px;
+}
+
+::-webkit-scrollbar-track {
+    background: #e0e0e0;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--win-gray);
+    box-shadow:
+        inset 1px 1px var(--win-white),
+        inset -1px -1px var(--win-gray-dark),
+        inset -2px -2px var(--win-black);
+}
+
+::-webkit-scrollbar-thumb:active {
+    background: var(--win-gray);
+}
+
+/* SELECTION */
+::selection {
+    background: var(--win-blue-dark);
+    color: var(--win-white);
+}

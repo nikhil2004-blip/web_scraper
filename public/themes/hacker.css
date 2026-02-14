@@ -1,0 +1,240 @@
+/* ULTRA-HIGH FIDELITY HACKER THEME */
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+:root {
+    --terminal-bg: #050a05;
+    --terminal-glow: #00ff00;
+    --terminal-dim: #003300;
+    --terminal-off: #001a00;
+    --scanline-color: rgba(0, 255, 0, 0.05);
+    --glass-panel: rgba(0, 20, 0, 0.7);
+}
+
+/* Global Setup */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--terminal-bg) !important;
+    color: var(--terminal-glow) !important;
+    font-family: 'Share Tech Mono', monospace !important;
+    font-size: 16px;
+    line-height: 1.6;
+    min-height: 100vh;
+    margin: 0;
+    overflow-x: hidden;
+    position: relative;
+
+    /* The Digital Grid */
+    background-image:
+        linear-gradient(rgba(0, 255, 0, 0.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 0, 0.07) 1px, transparent 1px),
+        radial-gradient(circle at center, transparent 0%, #000 120%);
+    background-size: 30px 30px, 30px 30px, 100% 100%;
+    background-attachment: fixed;
+}
+
+/* CRT Scanline & Flicker Effect Overlay */
+body::after {
+    content: " ";
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+    z-index: 9999;
+    background-size: 100% 2px, 3px 100%;
+    pointer-events: none;
+    /* Let clicks pass through */
+    opacity: 0.6;
+}
+
+/* Typography - Phosphor Glow */
+p,
+span,
+li,
+td,
+a {
+    text-shadow: 0 0 2px rgba(0, 255, 0, 0.5);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    text-transform: uppercase;
+    color: #fff !important;
+    text-shadow:
+        0 0 5px var(--terminal-glow),
+        0 0 10px var(--terminal-glow);
+    border-bottom: 2px solid var(--terminal-dim);
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    letter-spacing: 2px;
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+
+/* Decorative block next to headings */
+h1::before,
+h2::before,
+h3::before {
+    content: '>';
+    margin-right: 10px;
+    color: var(--terminal-glow);
+    animation: blink 1s step-end infinite;
+}
+
+/* The HUD Panels (Containers) */
+header,
+footer,
+nav,
+article,
+section,
+aside,
+.card {
+    border: 1px solid var(--terminal-dim);
+    background: var(--glass-panel);
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow:
+        0 0 10px rgba(0, 255, 0, 0.05),
+        inset 0 0 20px rgba(0, 255, 0, 0.05);
+    backdrop-filter: blur(4px);
+    position: relative;
+    /* Corner Accents */
+    clip-path: polygon(0 0,
+            100% 0,
+            100% calc(100% - 10px),
+            calc(100% - 10px) 100%,
+            0 100%);
+}
+
+/* Hyperlinks */
+a {
+    color: #fff !important;
+    text-decoration: none;
+    background: rgba(0, 255, 0, 0.1);
+    padding: 2px 5px;
+    border: 1px solid transparent;
+    transition: all 0.2s ease;
+}
+
+a:hover {
+    background: var(--terminal-glow);
+    color: #000 !important;
+    box-shadow: 0 0 15px var(--terminal-glow);
+    text-shadow: none;
+}
+
+/* Inputs - Data Entry Fields */
+input,
+select,
+textarea {
+    background: #000 !important;
+    border: 1px solid var(--terminal-dim) !important;
+    border-left: 4px solid var(--terminal-dim) !important;
+    color: var(--terminal-glow) !important;
+    font-family: 'Share Tech Mono', monospace;
+    padding: 12px 16px;
+    width: 100%;
+    outline: none;
+    transition: all 0.3s;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: var(--terminal-glow) !important;
+    border-left: 4px solid var(--terminal-glow) !important;
+    box-shadow:
+        inset 0 0 10px rgba(0, 255, 0, 0.1),
+        0 0 10px rgba(0, 255, 0, 0.2);
+}
+
+/* Buttons - Execute Commands */
+button,
+[type="submit"] {
+    background: transparent !important;
+    border: 1px solid var(--terminal-glow) !important;
+    color: var(--terminal-glow) !important;
+    font-family: inherit;
+    text-transform: uppercase;
+    padding: 12px 30px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    position: relative;
+    transition: 0.2s;
+    box-shadow: 0 0 5px var(--terminal-dim);
+    font-weight: bold;
+}
+
+button:hover,
+[type="submit"]:hover {
+    background: var(--terminal-glow) !important;
+    color: #000 !important;
+    box-shadow: 0 0 20px var(--terminal-glow), 0 0 40px var(--terminal-glow);
+    text-shadow: none;
+    transform: translateY(-2px);
+}
+
+/* Images - Digital Transmission Look */
+img {
+    filter: grayscale(100%) contrast(1.2) brightness(0.8) sepia(100%) hue-rotate(50deg) saturate(3);
+    border: 1px solid var(--terminal-dim);
+    opacity: 0.8;
+    transition: all 0.4s ease;
+    mix-blend-mode: luminosity;
+}
+
+img:hover {
+    filter: none;
+    /* Restore original color */
+    opacity: 1;
+    border-color: var(--terminal-glow);
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.4);
+    mix-blend-mode: normal;
+}
+
+/* Scrollbar - Circuit Track */
+::-webkit-scrollbar {
+    width: 10px;
+    background: #001100;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--terminal-dim);
+    border: 1px solid var(--terminal-glow);
+    box-shadow: inset 0 0 5px var(--terminal-glow);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--terminal-glow);
+}
+
+/* Selection Highlight */
+::selection {
+    background: var(--terminal-glow);
+    color: #000;
+    text-shadow: none;
+}
+
+/* Animations */
+@keyframes blink {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0;
+    }
+}

@@ -1,0 +1,246 @@
+/* NEO-RETRO PIXEL THEME */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap');
+
+:root {
+  --pixel-bg: #202028;
+  --pixel-panel: #2d2d3a;
+  --pixel-accent: #ff0055;
+  /* Rad Berry */
+  --pixel-highlight: #4dabf7;
+  /* Sky Blue */
+  --pixel-gold: #ffd700;
+  --pixel-shadow: #000000;
+  --pixel-light: #585872;
+  --scanline-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Global Setup */
+* {
+  box-sizing: border-box;
+  cursor: url('data:image/svg+xml;utf8,<svg width="24" height="24" viewBox="0 0 24 24" fill="white" stroke="black" xmlns="http://www.w3.org/2000/svg"><path d="M5.5 3.5l10 10-4.5 0 4.5 7-3.5 1.5-4-7-1 1 0-12.5z"/></svg>'), auto;
+}
+
+body {
+  font-family: 'VT323', monospace !important;
+  image-rendering: pixelated;
+  /* Essential for crisp edges */
+  background-color: var(--pixel-bg);
+  color: #e0e0e0;
+  font-size: 22px;
+  /* Slightly larger for readability */
+  line-height: 1.5;
+  margin: 0;
+
+  /* Animated Dither Pattern Background */
+  background-image:
+    radial-gradient(var(--pixel-light) 15%, transparent 16%),
+    radial-gradient(var(--pixel-light) 15%, transparent 16%);
+  background-size: 20px 20px;
+  background-position: 0 0, 10px 10px;
+  animation: bg-scroll 60s linear infinite;
+}
+
+/* Subtle CRT Scanline Overlay */
+body::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: repeating-linear-gradient(0deg,
+      var(--scanline-color),
+      var(--scanline-color) 1px,
+      transparent 1px,
+      transparent 3px);
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* Typography - RPG Style */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Press Start 2P', cursive !important;
+  color: var(--pixel-gold);
+  line-height: 1.5;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  /* Hard Drop Shadow */
+  text-shadow:
+    4px 4px 0px var(--pixel-shadow),
+    2px 2px 0px var(--pixel-shadow);
+  letter-spacing: -1px;
+}
+
+p,
+span,
+li,
+td {
+  text-shadow: 1px 1px 0 #000;
+}
+
+/* Links - The "Select" Effect */
+a {
+  color: var(--pixel-highlight) !important;
+  text-decoration: none;
+  background-color: rgba(77, 171, 247, 0.1);
+  border-bottom: 2px solid var(--pixel-highlight);
+  padding: 0 4px;
+  transition: all 0.1s steps(2);
+  /* Stepped animation */
+}
+
+a:hover {
+  background-color: var(--pixel-highlight);
+  color: #000 !important;
+  box-shadow: 4px 4px 0 var(--pixel-shadow);
+  transform: translate(-2px, -2px);
+}
+
+/* The "RPG Box" Container Style */
+header,
+footer,
+nav,
+article,
+section,
+aside,
+.card,
+[role="dialog"] {
+  background: var(--pixel-panel);
+  border: 4px solid var(--pixel-light);
+  /* Beveled Border Trick */
+  border-top-color: #6c6c8c;
+  /* Light Highlight */
+  border-left-color: #6c6c8c;
+  border-right-color: #1a1a25;
+  /* Dark Shadow */
+  border-bottom-color: #1a1a25;
+
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow:
+    8px 8px 0 rgba(0, 0, 0, 0.5),
+    /* Deep shadow */
+    inset 2px 2px 0 rgba(255, 255, 255, 0.05);
+  position: relative;
+}
+
+/* Inputs - The "Terminal" Look */
+input,
+textarea,
+select {
+  font-family: 'VT323', monospace !important;
+  font-size: 22px !important;
+  background: #000 !important;
+  color: #0f0 !important;
+  /* Matrix Green text */
+  border: 4px solid var(--pixel-light) !important;
+  border-radius: 0 !important;
+  padding: 12px 16px;
+  width: 100%;
+  outline: none;
+  box-shadow: inset 4px 4px 0 rgba(0, 0, 0, 0.5);
+}
+
+input:focus,
+textarea:focus {
+  border-color: var(--pixel-highlight) !important;
+  background: #050505 !important;
+}
+
+/* Buttons - The "Arcade Cabinet" Feel */
+button,
+[type="submit"],
+.btn,
+[role="button"] {
+  font-family: 'Press Start 2P', cursive !important;
+  font-size: 14px !important;
+  /* Smaller font for Arcade look */
+  line-height: 2 !important;
+
+  background: var(--pixel-accent) !important;
+  color: #fff !important;
+
+  /* Pixelated Bevel */
+  border: 4px solid !important;
+  border-color:
+    rgba(255, 255, 255, 0.4) rgba(0, 0, 0, 0.4) rgba(0, 0, 0, 0.4) rgba(255, 255, 255, 0.4) !important;
+
+  padding: 12px 24px;
+  margin: 8px 0;
+  cursor: pointer;
+  text-transform: uppercase;
+  position: relative;
+  box-shadow:
+    4px 4px 0 var(--pixel-shadow),
+    /* Hard shadow */
+    0 0 0 4px var(--pixel-panel);
+  /* Outer ring */
+
+  transition: transform 0.1s;
+}
+
+/* Button Press Animation */
+button:active,
+[type="submit"]:active {
+  transform: translate(4px, 4px);
+  box-shadow: none;
+  border-color:
+    rgba(0, 0, 0, 0.4) rgba(255, 255, 255, 0.4) rgba(255, 255, 255, 0.4) rgba(0, 0, 0, 0.4) !important;
+  /* Invert bevel */
+}
+
+button:hover {
+  filter: brightness(1.1);
+}
+
+/* Images & Media - Pixel Frame */
+img,
+video,
+svg {
+  border: 4px solid #fff;
+  box-shadow:
+    8px 8px 0 var(--pixel-shadow),
+    -4px -4px 0 rgba(255, 255, 255, 0.2);
+  image-rendering: pixelated;
+  max-width: 100%;
+  height: auto;
+}
+
+/* Scrollbar - Chunky Blocks */
+::-webkit-scrollbar {
+  width: 20px;
+  background: #000;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--pixel-light);
+  border: 4px solid #000;
+  /* Creates padding effect */
+  box-shadow: inset 2px 2px 0 rgba(255, 255, 255, 0.2);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--pixel-highlight);
+}
+
+::selection {
+  background: var(--pixel-accent);
+  color: #fff;
+  text-shadow: 2px 2px 0 #000;
+}
+
+/* Slow scrolling background animation */
+@keyframes bg-scroll {
+  from {
+    background-position: 0 0, 10px 10px;
+  }
+
+  to {
+    background-position: 1000px 1000px, 1010px 1010px;
+  }
+}
