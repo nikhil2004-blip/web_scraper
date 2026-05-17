@@ -48,13 +48,15 @@ body::after {
     z-index: 9999;
     background-size: 100% 2px, 3px 100%;
     pointer-events: none;
-    /* Let clicks pass through */
     opacity: 0.6;
+    /* GPU-isolated layer so this doesn't force repaints on the rest of the page */
+    will-change: transform;
+    contain: strict;
+    transform: translateZ(0);
 }
 
 /* Typography - Phosphor Glow */
 p,
-span,
 li,
 td,
 a {
@@ -77,8 +79,6 @@ h6 {
     margin-bottom: 20px;
     letter-spacing: 2px;
     position: relative;
-    display: inline-block;
-    width: 100%;
 }
 
 /* Decorative block next to headings */
@@ -91,14 +91,9 @@ h3::before {
     animation: blink 1s step-end infinite;
 }
 
-/* The HUD Panels (Containers) */
-header,
-footer,
-nav,
-article,
-section,
-aside,
-.card {
+/* Card elements only — NOT structural layout containers */
+.card,
+[role="dialog"] {
     border: 1px solid var(--terminal-dim);
     background: var(--glass-panel);
     padding: 20px;
@@ -108,7 +103,6 @@ aside,
         inset 0 0 20px rgba(0, 255, 0, 0.05);
     backdrop-filter: blur(4px);
     position: relative;
-    /* Corner Accents */
     clip-path: polygon(0 0,
             100% 0,
             100% calc(100% - 10px),
@@ -118,10 +112,8 @@ aside,
 
 /* Hyperlinks */
 a {
-    color: #fff !important;
+    color: var(--terminal-glow) !important;
     text-decoration: none;
-    background: rgba(0, 255, 0, 0.1);
-    padding: 2px 5px;
     border: 1px solid transparent;
     transition: all 0.2s ease;
 }

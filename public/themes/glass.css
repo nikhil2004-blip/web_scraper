@@ -47,7 +47,6 @@ h6 {
 }
 
 p,
-span,
 li,
 td {
     color: var(--text-muted);
@@ -83,33 +82,21 @@ a:hover::after {
     transform-origin: bottom left;
 }
 
-/* THE GLASS CARD - The core aesthetic engine */
-header,
-nav,
-article,
-section,
-aside,
-footer,
+/* THE GLASS CARD — applied to card components only, NOT layout containers */
+/* Applying to header/nav/section breaks the site's flex/grid layout */
 .card,
 [role="dialog"] {
     background: var(--glass-surface);
-    /* Frosted Blur */
     backdrop-filter: blur(var(--blur-strength));
     -webkit-backdrop-filter: blur(var(--blur-strength));
-
-    /* Rim Lighting (Top/Left light, Bottom/Right dark) */
     border-top: 1px solid var(--glass-highlight);
     border-left: 1px solid var(--glass-highlight);
     border-right: 1px solid rgba(255, 255, 255, 0.05);
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-
     border-radius: 24px;
-    /* Softer, more modern curve */
     box-shadow:
         0 8px 32px 0 rgba(0, 0, 0, 0.3),
         inset 0 0 0 1px rgba(255, 255, 255, 0.05);
-    /* Subtle inner ring */
-
     padding: 32px;
     margin-bottom: 24px;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -156,8 +143,7 @@ select:focus {
 
 /* Buttons - The "Jewel" Look */
 button,
-[type="submit"],
-[role="button"] {
+[type="submit"] {
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0)) !important;
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.18) !important;

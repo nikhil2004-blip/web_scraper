@@ -30,13 +30,12 @@ body {
     background-position: 0 0, 1px 1px;
     background-blend-mode: overlay;
     opacity: 1;
-    /* Adjust if too dark */
 
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
     color: var(--win-black);
     font-size: 14px;
     line-height: 1.5;
-    padding: 20px;
+    /* NOTE: No padding on body — that shifts all page content */
 }
 
 /* Links */
@@ -51,12 +50,8 @@ a:hover {
 }
 
 /* THE WINDOW CONTAINER (The 3D Box) */
-/* We target semantic tags to turn them into "Windows" */
-section,
-article,
-nav,
-header,
-footer,
+/* SAFE: Only target explicit card/dialog elements, NOT layout containers.
+   Applying to section/nav/header/footer breaks flex/grid on real sites. */
 .window,
 [role="dialog"],
 .card {
@@ -72,7 +67,6 @@ footer,
         1px 1px 0 var(--win-black);
 
     border: 1px solid var(--win-gray);
-    /* Fallback */
     position: relative;
 }
 
@@ -91,13 +85,6 @@ h6 {
     font-size: 14px;
     letter-spacing: 0.5px;
     margin: 0 0 12px 0;
-
-    /* Flex to allow for "buttons" if you add them later */
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    /* Icon Simulation using ::before */
     text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.5);
     cursor: default;
 }
@@ -153,8 +140,7 @@ select:focus {
 
 /* BUTTONS: The "Pop" Look */
 button,
-[type="submit"],
-[role="button"] {
+[type="submit"] {
     background: var(--win-gray) !important;
     color: #000 !important;
     font-family: 'MS Sans Serif', Tahoma, sans-serif !important;
