@@ -25,21 +25,21 @@ export const ThemeSelector: React.FC<ThemeSelectorProps> = ({ value, onChange })
             className="md:w-64 w-full"
         >
             <div className="relative">
-                <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-gray-400">
+                <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-outline">
                     <Palette size={20} />
                 </div>
                 <select
                     value={value}
                     onChange={(e) => onChange(e.target.value)}
-                    className="w-full pl-10 pr-4 py-4 bg-white/5 dark:bg-black/20 border border-white/10 dark:border-white/5 rounded-xl text-lg backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all text-white appearance-none cursor-pointer hover:bg-white/10"
+                    className="w-full pl-10 pr-4 py-4 bg-surface-container border border-outline-variant rounded-xl text-lg focus:outline-none focus:ring-2 focus:ring-primary transition-all text-on-surface appearance-none cursor-pointer hover:bg-surface-container-high"
                 >
                     {themes.map((theme) => (
-                        <option key={theme.id} value={theme.id} className="bg-gray-900 text-white">
+                        <option key={theme.id} value={theme.id} className="bg-surface-container text-on-surface">
                             {theme.name}
                         </option>
                     ))}
                 </select>
-                <div className="absolute inset-y-0 right-4 flex items-center pointer-events-none text-gray-400">
+                <div className="absolute inset-y-0 right-4 flex items-center pointer-events-none text-outline">
                     <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" /></svg>
                 </div>
             </div>
