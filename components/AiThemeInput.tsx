@@ -1,9 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Sparkles, Wand2, Loader2, Send } from 'lucide-react';
-import { cn } from '@/utils/cn';
 import axios from 'axios';
 
 interface AiThemeInputProps {
