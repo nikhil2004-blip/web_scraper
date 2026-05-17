@@ -97,9 +97,9 @@ export default function Home() {
             initial={{ opacity: 0, y: -30 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -30 }}
-            className="fixed top-6 left-1/2 -translate-x-1/2 z-[9999] flex items-center gap-2 px-5 py-3 rounded-full bg-green-500/90 backdrop-blur-md text-white text-sm font-semibold shadow-2xl shadow-green-500/30 border border-green-400/30"
+            className="fixed top-6 left-1/2 -translate-x-1/2 z-[9999] flex items-center gap-2 px-5 py-3 rounded-[12px] bg-surface-container-high/90 backdrop-blur-[12px] text-on-surface text-sm font-semibold shadow-2xl border border-primary-container/30"
           >
-            <CheckCircle2 size={16} />
+            <CheckCircle2 size={16} className="text-primary-container" />
             {toast}
           </motion.div>
         )}
@@ -114,23 +114,23 @@ export default function Home() {
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="text-center space-y-6 max-w-3xl"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-sm font-medium text-blue-300">
-            <Sparkles size={16} /> <span>v3.1 AI Update</span>
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-[12px] bg-surface-container-high/50 backdrop-blur-[12px] border border-outline-variant/30 text-sm font-medium text-primary-container">
+            <Sparkles size={16} /> <span className="tracking-widest uppercase text-xs">v3.1 Obsidian Update</span>
           </div>
 
-          <h1 className="text-6xl md:text-8xl font-extrabold tracking-tighter bg-clip-text text-transparent bg-gradient-to-b from-white to-white/50 drop-shadow-2xl">
+          <h1 className="text-6xl md:text-8xl font-bold tracking-tight text-on-surface drop-shadow-2xl">
             WebSkin
           </h1>
 
-          <p className="text-xl md:text-2xl text-gray-400 font-light leading-relaxed">
-            Transform any website into a retro masterpiece or futuristic interface with <span className="text-white font-semibold">AI Magic</span>.
+          <p className="text-xl md:text-2xl text-on-surface-variant font-light leading-relaxed">
+            Transform any website into a high-fidelity interface with <span className="text-primary-container font-medium">precision-engineered AI</span>.
           </p>
         </motion.div>
 
         {/* Input & Controls Section */}
         <div className="w-full max-w-4xl space-y-8">
-          <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8 shadow-2xl ring-1 ring-white/10 relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent pointer-events-none" />
+          <div className="bg-surface-container/70 backdrop-blur-[12px] border border-outline-variant/40 rounded-[24px] p-8 shadow-2xl relative overflow-hidden">
+            <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-primary-container/30 to-transparent pointer-events-none" />
 
             <div className="flex flex-col md:flex-row gap-6 items-end relative z-10">
               <ThemeSelector value={theme} onChange={(val) => { setTheme(val); setAiCss(null); }} />
@@ -149,7 +149,7 @@ export default function Home() {
               <motion.p
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="text-xs text-center mt-3 text-green-400 flex items-center justify-center gap-1"
+                className="text-xs text-center mt-3 text-primary-container flex items-center justify-center gap-1"
               >
                 <CheckCircle2 size={12} /> AI Theme Active — click Apply Theme to apply
               </motion.p>
@@ -176,12 +176,12 @@ export default function Home() {
             { icon: <Wand2 size={24} />, title: 'AI Powered', desc: 'Generate unique themes with text prompts.' },
             { icon: <Code size={24} />, title: 'Pro Presets', desc: 'Four professionally crafted design systems.' },
           ].map((feature, idx) => (
-            <div key={idx} className="p-6 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm hover:bg-white/10 transition-colors">
-              <div className="bg-blue-500/20 w-12 h-12 rounded-lg flex items-center justify-center mb-4 text-blue-400">
+            <div key={idx} className="p-6 rounded-[16px] bg-surface-container/70 backdrop-blur-[12px] border border-outline-variant/30 hover:bg-surface-container-high/70 transition-colors">
+              <div className="bg-primary-container/10 w-12 h-12 rounded-[12px] flex items-center justify-center mb-4 text-primary-container border border-primary-container/20">
                 {feature.icon}
               </div>
-              <h3 className="text-xl font-bold mb-2">{feature.title}</h3>
-              <p className="text-gray-400">{feature.desc}</p>
+              <h3 className="text-xl font-semibold mb-2 text-on-surface">{feature.title}</h3>
+              <p className="text-on-surface-variant">{feature.desc}</p>
             </div>
           ))}
         </motion.div>
