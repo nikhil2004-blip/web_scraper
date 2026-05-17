@@ -2,12 +2,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import Groq from 'groq-sdk';
 
 export async function POST(request: NextRequest) {
-    let body: any;
+    let body: { prompt?: string };
     let userPrompt: string = '';
 
     try {
         body = await request.json();
-        userPrompt = body.prompt;
+        userPrompt = body.prompt || '';
 
         if (!userPrompt) {
             return NextResponse.json({ error: 'Prompt is required' }, { status: 400 });
@@ -23,199 +23,187 @@ export async function POST(request: NextRequest) {
         const groq = new Groq({ apiKey });
 
         // THE ULTIMATE PROMPT - Engineered for perfection
-        // ============================================================
-        // 🎨 ULTIMATE CSS THEME GENERATION PROMPT
-        // Drop this into your route.ts to replace the fullPrompt const
-        // ============================================================
-
         const fullPrompt = `
-You are a world-class creative director and CSS artisan. Your job is to generate a BREATHTAKING, 
-publication-quality CSS theme that completely transforms any webpage into a visually unforgettable experience.
-
-MINDSET: You are NOT writing utility CSS. You are painting a canvas. Every selector is a brushstroke.
-Think: "What would a AAA game UI artist, a luxury brand designer, and a cyberpunk art director 
-create together if they only had CSS?"
+You are a world-class CSS artisan. Generate a BREATHTAKING CSS theme that visually transforms any webpage.
 
 ═══════════════════════════════════════════
 OUTPUT RULES (NON-NEGOTIABLE)
 ═══════════════════════════════════════════
-1. Return ONLY raw CSS. Zero markdown. Zero explanations. Zero backticks. Just CSS.
-2. EVERY single property MUST end with !important — no exceptions.
-3. The theme must be SELF-CONTAINED — all effects via pure CSS only.
-4. Start with @import for a Google Font that perfectly embodies the vibe.
-5. Minimum 80 CSS rules. A thin theme is a failed theme.
+1. Return ONLY raw CSS. Zero markdown. Zero explanations. Zero backticks.
+2. Every property that overrides site defaults MUST use !important.
+3. Self-contained — pure CSS only, no JS.
+4. Start with @import for a Google Font matching the vibe.
 
 ═══════════════════════════════════════════
-DESIGN PHILOSOPHY
+🚫 ABSOLUTELY FORBIDDEN — DO NOT DO THESE
 ═══════════════════════════════════════════
-Before generating, internalize the user's vibe and ask:
-- What EMOTION should someone feel when they see this page? (awe? nostalgia? danger? luxury?)
-- What WORLD does this theme belong to? (deep ocean? neon city? enchanted forest? ancient temple?)
-- What makes this theme UNFORGETTABLE vs forgettable?
+NEVER apply border, padding, margin, background, or border-radius to:
+  - div, section, article, main, aside, nav, header, footer, span
+  - Any structural layout container or generic wrapper
+  WHY: Real websites use flex/grid inside these. Adding border/padding/margin
+  explodes the layout into a broken mess of nested boxes with visible boundaries.
+  This is the #1 way to destroy a real website's layout. DO NOT DO IT.
 
-Then execute with FULL COMMITMENT. No timid half-measures.
-
-═══════════════════════════════════════════
-MANDATORY SELECTORS CHECKLIST
-═══════════════════════════════════════════
-Every theme MUST include ALL of these:
-
-[ FOUNDATION ]
-  * { box-sizing, transition }
-  body { background (use gradients/mesh/pattern NOT flat color), color, font-family, line-height, min-height, cursor }
-  ::selection { background, color }
-  ::-webkit-scrollbar { width, background }
-  ::-webkit-scrollbar-thumb { background, border-radius, border }
-  ::-webkit-scrollbar-track { background }
-
-[ LAYOUT CONTAINERS ]
-  html, body wrapper
-  div, section, article, main { semi-transparent backgrounds, themed borders, border-radius, padding, box-shadow }
-  header { distinct styling, border-bottom, backdrop-filter blur effect }
-  footer { distinct styling, border-top }
-  nav { styling, gap, flex or inline display }
-  aside { side-panel styling }
-
-[ TYPOGRAPHY ]
-  h1 { massive impact — large text-shadow glow, gradient text via background-clip, letter-spacing, text-transform }
-  h2, h3 { strong accent color, border-bottom with glow }
-  h4, h5, h6 { subtle accent, italic or small-caps }
-  p { readable line-height, slight text-shadow for depth }
-  span, li, td, th { themed color }
-  strong, b { accent color, text-shadow }
-  em, i { different accent tone, font-style }
-  code, pre { monospace font, themed background, border, padding }
-  blockquote { left border glow, italic, background, padding }
-
-[ INTERACTIVE ELEMENTS ]
-  a { color, background pill, padding, border, no underline, transition }
-  a:hover { full accent background, contrasting text, glow box-shadow, transform translateY(-2px) }
-  a:visited { slightly muted version }
-  
-  button, input[type="submit"], input[type="button"] {
-    gradient background, themed color, styled border, padding, 
-    border-radius, font-weight bold, text-transform uppercase,
-    letter-spacing, cursor pointer, transition all
-  }
-  button:hover { translateY(-4px), dramatic box-shadow glow, brightness(1.3) }
-  button:active { translateY(0), scale(0.98) }
-
-[ FORM ELEMENTS ]
-  input[type="text"], input[type="email"], input[type="password"], 
-  input[type="search"], input[type="number"], textarea, select {
-    themed background (darker), themed color, styled border, 
-    padding, border-radius, font-family inherit
-  }
-  input:focus, textarea:focus, select:focus {
-    border-color accent, box-shadow glow, outline none, 
-    background slightly lighter
-  }
-  input::placeholder { themed muted color }
-  label { accent color, font-weight, letter-spacing }
-  
-  input[type="checkbox"], input[type="radio"] { accent-color: themed }
-
-[ DATA DISPLAY ]
-  table { border-collapse collapse, width 100%, box-shadow }
-  thead { themed gradient background }
-  th { accent color, text-transform uppercase, letter-spacing, padding, border }
-  td { themed color, padding, border, background rgba }
-  tr:hover { background highlight }
-  tr:nth-child(even) { slightly different background }
-
-[ MEDIA & VISUAL ]
-  img { themed border, border-radius, box-shadow, filter (subtle hue-rotate or brightness) }
-  img:hover { filter brightness(1.1), box-shadow glow, transform scale(1.02) }
-  video, iframe, canvas { themed border, border-radius, box-shadow }
-  figure, figcaption { themed styling }
-
-[ LISTS ]
-  ul, ol { padding-left, color }
-  li { padding, border-bottom subtle, color }
-  li::marker { color accent }
-  ul li::before { themed custom bullet via content }
-
-[ UTILITY & MISC ]
-  hr { border: themed gradient line, height, margin }
-  .card, .container, .wrapper, .box { themed card styling with glow }
-  .badge, .tag, .pill { accent background, styled, border-radius full }
-  .modal, .dialog, .popup, .overlay { dark themed, backdrop-blur }
-  .tooltip { themed background, border, shadow }
-  .alert, .notification, .toast { themed with left border accent }
-  .navbar, .sidebar, .panel { distinct themed styling }
-  
-[ ANIMATIONS — include at least 3 keyframe animations ]
-  @keyframes themeGlow { pulsing box-shadow/text-shadow }
-  @keyframes themeFadeIn { opacity 0 to 1 with translateY }
-  @keyframes themeShimmer { background-position shift for shimmer effect }
-  Apply animations to: h1 (glow pulse), body links/buttons (shimmer), 
-  containers on load (fadeIn)
-
-[ PSEUDO-ELEMENTS for extra flair ]
-  h1::after or h1::before { decorative line, glow bar, or icon }
-  section::before { subtle background pattern or gradient overlay }
-  button::after { ripple or shine sweep effect }
+NEVER override: display, position, flex, grid, width, height, float, overflow on containers.
+NEVER use [role="button"] as a selector (matches too many divs).
+NEVER add content: to ::before/::after on div, section, nav, header, footer.
+NEVER set font-size larger than 20px on body/p (breaks layouts).
+NEVER force colors on generic 'span' tags with !important. Leave inline/specific colors of spans intact so badges and icons don't get unformatted.
 
 ═══════════════════════════════════════════
-COLOR STRATEGY
+SAFE SELECTORS — STYLE ONLY THESE
 ═══════════════════════════════════════════
-- Pick ONE dominant background tone (dark, light, or midtone)
-- Pick ONE primary accent (the "hero" color — vivid, saturated)  
-- Pick ONE secondary accent (complementary or analogous)
-- Pick ONE highlight/glow color (often lighter/brighter version of accent)
-- Use rgba() extensively for layered transparency depth
-- Body background: NEVER a flat color. Use:
-  → multi-stop linear-gradient
-  → radial-gradient focal points  
-  → repeating-linear-gradient for patterns
-  → layered background with multiple background-image values
+✅ FOUNDATION
+  :root { CSS custom properties for theme tokens }
+  html, body { background (gradient/pattern), color, font-family, line-height }
+  ::selection, ::-webkit-scrollbar, ::-webkit-scrollbar-thumb
+
+✅ TYPOGRAPHY (safe — text-only changes, no layout impact)
+  h1, h2, h3, h4, h5, h6 { color, font-family, text-shadow, letter-spacing, text-transform }
+  p, li, td, th, strong, em, code, pre { color, font, text-shadow }
+  blockquote { left-border accent, italic, background — OK here since it's a content element }
+
+✅ INTERACTIVE (buttons, links — safe to fully style)
+  a, a:hover, a:visited
+  button, button:hover, button:active
+  input[type="submit"], input[type="button"], input[type="reset"]
+
+✅ FORM ELEMENTS (colors/backgrounds only, do NOT override layout properties like padding with !important)
+  input[type="text"], input[type="email"], input[type="password"],
+  input[type="search"], input[type="number"], textarea, select
+  input:focus, textarea:focus, select:focus
+  input::placeholder, label
+
+✅ DATA & MEDIA
+  table, thead, th, td, tr, tr:hover, tr:nth-child(even)
+  img { border, border-radius, box-shadow, filter — OK, images are standalone }
+  video { border, border-radius }
+  code, pre { background, border, font-family, color, padding }
+
+✅ SEMANTIC CARD CLASSES (safe — site explicitly uses these as cards)
+  .card, .box, .widget, .badge, .tag, .pill, .chip
+  .modal, [role="dialog"], .tooltip, .popover, .dropdown-menu
+  .alert, .notification, .toast, .banner
+
+✅ ANIMATIONS
+  At least 2 keyframe animations for text/buttons/body effects
+  Apply to: h1 (glow pulse), body background, links/buttons (shimmer/lift)
 
 ═══════════════════════════════════════════
-TYPOGRAPHY RULES
+STRUCTURAL CODE EXAMPLE (GOLD STANDARD)
 ═══════════════════════════════════════════
-- Choose a Google Font that feels NATIVE to the theme world
-- NEVER use: Inter, Roboto, Arial, system-ui, sans-serif alone
-- Good choices by vibe:
-  → Sci-fi/Tech: "Orbitron", "Exo 2", "Rajdhani", "Share Tech Mono"
-  → Horror/Dark: "Creepster", "Nosifer", "Syne Mono"  
-  → Luxury/Elegant: "Cormorant Garamond", "Playfair Display", "Libre Baskerville"
-  → Retro/80s: "Press Start 2P", "VT323", "Boogaloo", "Permanent Marker"
-  → Nature/Organic: "Lora", "Merriweather", "Libre Caslon Text"
-  → Cyberpunk/Neon: "Audiowide", "Syncopate", "Michroma"
-  → Fantasy/Magic: "Cinzel", "MedievalSharp", "Almendra"
-  → Brutal/Raw: "Anton", "Bebas Neue", "Black Han Sans"
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;700&display=swap');
 
-═══════════════════════════════════════════
-EFFECTS MASTERY
-═══════════════════════════════════════════
-Use these CSS techniques liberally:
-- text-shadow: layered multiple shadows for depth + glow
-- box-shadow: inset + outset + colored glow combinations
-- backdrop-filter: blur() for frosted glass on overlays
-- filter: on images, use hue-rotate() to theme them
-- background-clip: text for gradient text on headings
-- -webkit-background-clip: text + color: transparent for gradient text
-- mix-blend-mode: for interesting overlay effects
-- transform + transition: on ALL interactive elements
-- CSS custom properties (--vars): define theme tokens at :root
+:root {
+  --neon-bg: #0d0e15;
+  --neon-accent: #bc34fa;
+  --neon-accent-rgb: 188, 52, 250;
+  --neon-accent-cyan: #00f3ff;
+  --text-main: #f3f4f6;
+  --text-muted: #9ca3af;
+}
+
+html, body {
+  background: 
+    radial-gradient(circle at 10% 20%, rgba(var(--neon-accent-rgb), 0.15) 0%, transparent 40%),
+    radial-gradient(circle at 90% 80%, rgba(0, 243, 255, 0.1) 0%, transparent 40%),
+    #0d0e15 !important;
+  background-attachment: fixed !important;
+  color: var(--text-main) !important;
+  font-family: 'Outfit', sans-serif !important;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #fff !important;
+  font-family: 'Outfit', sans-serif !important;
+  text-shadow: 0 0 15px rgba(var(--neon-accent-rgb), 0.6) !important;
+}
+
+p, li, td, th {
+  color: var(--text-muted) !important;
+}
+
+a {
+  color: var(--neon-accent-cyan) !important;
+  text-shadow: 0 0 8px rgba(0, 243, 255, 0.4) !important;
+  transition: all 0.3s ease !important;
+}
+
+a:hover {
+  color: #fff !important;
+  text-shadow: 0 0 15px rgba(0, 243, 255, 0.8) !important;
+}
+
+button, input[type="submit"] {
+  background: linear-gradient(135deg, var(--neon-accent), #7928ca) !important;
+  color: #fff !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  box-shadow: 0 4px 15px rgba(var(--neon-accent-rgb), 0.4) !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+}
+
+button:hover, input[type="submit"]:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 20px rgba(var(--neon-accent-rgb), 0.6) !important;
+}
+
+input:not([type="submit"]):not([type="button"]), textarea, select {
+  background: rgba(255, 255, 255, 0.05) !important;
+  color: #fff !important;
+  border: 1px solid rgba(var(--neon-accent-rgb), 0.3) !important;
+  border-radius: 6px !important;
+  outline: none !important;
+}
+
+input:focus, textarea:focus, select:focus {
+  border-color: var(--neon-accent-cyan) !important;
+  box-shadow: 0 0 10px rgba(0, 243, 255, 0.3) !important;
+}
+
+.card, .box, .widget {
+  background: rgba(255, 255, 255, 0.03) !important;
+  border: 1px solid rgba(var(--neon-accent-rgb), 0.2) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+}
 
 ═══════════════════════════════════════════
 USER'S THEME REQUEST
 ═══════════════════════════════════════════
 Vibe/Description: "${userPrompt}"
 
-Now generate the most SPECTACULAR, COMPLETE CSS theme possible for this vibe. 
-Make it so good that someone would pay for it.
-Every line should serve the aesthetic vision. GO ALL OUT.
+Generate the most SPECTACULAR, layout-safe CSS theme possible for this vibe.
+Remember: Beautiful + Non-destructive to site layout. GO ALL OUT on colors, typography, effects.
+But NEVER touch structural containers (div, section, nav, header, footer, aside, main, span).
 `;
 
-        console.log('🤖 Sending optimized prompt to Groq...');
-        const completion = await groq.chat.completions.create({
-            model: 'llama-3.3-70b-versatile',
-            messages: [{ role: 'user', content: fullPrompt }],
-            max_tokens: 2500,
-            temperature: 0.5, // Lower for more consistent, professional output
-        });
+        console.log('🤖 Sending optimized prompt to Groq with model fallback cascade...');
+        let completion;
+        try {
+            completion = await groq.chat.completions.create({
+                model: 'llama-3.3-70b-versatile',
+                messages: [{ role: 'user', content: fullPrompt }],
+                max_tokens: 2500,
+                temperature: 0.5,
+            });
+        } catch (groqError) {
+            console.warn('⚠️ Primary model llama-3.3-70b-versatile failed:', (groqError as Error).message);
+            console.log('🔄 Attempting fallback to llama-3.1-8b-instant...');
+            try {
+                completion = await groq.chat.completions.create({
+                    model: 'llama-3.1-8b-instant',
+                    messages: [{ role: 'user', content: fullPrompt }],
+                    max_tokens: 2500,
+                    temperature: 0.5,
+                });
+            } catch (fallbackError) {
+                console.error('❌ Fallback model llama-3.1-8b-instant also failed:', (fallbackError as Error).message);
+                throw fallbackError; // Trigger fallback to generateMockTheme
+            }
+        }
 
         let css = completion.choices[0]?.message?.content || '';
 
@@ -228,26 +216,23 @@ Every line should serve the aesthetic vision. GO ALL OUT.
             css = css.substring(firstCssIndex);
         }
 
+        // Trim trailing explanation text after the final closing brace
+        const lastBraceIndex = css.lastIndexOf('}');
+        if (lastBraceIndex !== -1) {
+            css = css.substring(0, lastBraceIndex + 1);
+        }
+
         console.log('✅ Generated CSS length:', css.length);
         return NextResponse.json({ css });
 
-    } catch (error: any) {
-        console.error('AI theme generation failed:', error.message);
-
-        // Gracefully fall back to mock on quota/auth errors
-        if (error.message?.includes('429') || error.message?.includes('quota')) {
-            console.warn('⚠️ Quota exceeded — falling back to Mock theme');
-            return generateMockTheme(userPrompt || 'default theme');
-        }
-
-        return NextResponse.json(
-            { error: 'Failed to generate theme: ' + error.message },
-            { status: 500 }
-        );
+    } catch (error) {
+        console.error('AI theme generation failed:', (error as Error).message);
+        console.warn('⚠️ Quota exceeded or API error — falling back to Mock theme');
+        return generateMockTheme(userPrompt || 'default theme');
     }
 }
 
-// Enhanced Mock Theme
+// Highly Refined Layout-Safe Fallback Mock Theme
 function generateMockTheme(prompt: string) {
     let baseColor = '#ffffff';
     let bgColor = '#0f172a';
@@ -257,96 +242,135 @@ function generateMockTheme(prompt: string) {
 
     if (p.includes('red') || p.includes('fire') || p.includes('hot')) {
         accentColor = '#ef4444'; bgColor = '#1a0a0a'; baseColor = '#fef2f2'; vibe = 'intense';
-    }
-    if (p.includes('blue') || p.includes('ocean') || p.includes('water')) {
+    } else if (p.includes('blue') || p.includes('ocean') || p.includes('water')) {
         accentColor = '#3b82f6'; bgColor = '#0c1e3a'; baseColor = '#eff6ff'; vibe = 'calm';
-    }
-    if (p.includes('pink') || p.includes('cute') || p.includes('pastel')) {
+    } else if (p.includes('pink') || p.includes('cute') || p.includes('pastel')) {
         accentColor = '#ec4899'; bgColor = '#2d1b2e'; baseColor = '#fdf2f8'; vibe = 'playful';
-    }
-    if (p.includes('green') || p.includes('nature') || p.includes('forest')) {
+    } else if (p.includes('green') || p.includes('nature') || p.includes('forest')) {
         accentColor = '#22c55e'; bgColor = '#0a1f0a'; baseColor = '#f0fdf4'; vibe = 'natural';
-    }
-    if (p.includes('purple') || p.includes('royal') || p.includes('luxury')) {
+    } else if (p.includes('purple') || p.includes('royal') || p.includes('luxury')) {
         accentColor = '#a855f7'; bgColor = '#1e1034'; baseColor = '#faf5ff'; vibe = 'elegant';
-    }
-    if (p.includes('yellow') || p.includes('gold') || p.includes('sun')) {
+    } else if (p.includes('yellow') || p.includes('gold') || p.includes('sun')) {
         accentColor = '#eab308'; bgColor = '#1a1410'; baseColor = '#fefce8'; vibe = 'vibrant';
+    } else if (p.includes('neon') || p.includes('cyber') || p.includes('dark')) {
+        accentColor = '#a855f7'; bgColor = '#050508'; baseColor = '#e2e8f0'; vibe = 'cyberpunk';
     }
 
     const css = `
 /* 🎨 AI Generated Theme - ${vibe.toUpperCase()} */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 
-* { box-sizing: border-box !important; }
+:root {
+  --theme-bg: ${bgColor};
+  --theme-accent: ${accentColor};
+  --theme-text: ${baseColor};
+}
+
+html, body {
+  background: linear-gradient(135deg, ${bgColor} 0%, ${bgColor}dd 50%, ${bgColor}bb 100%) !important;
+  color: ${baseColor} !important;
+  font-family: 'Inter', sans-serif !important;
+  line-height: 1.6 !important;
+}
 
 body {
-    background: ${bgColor} !important;
-    color: ${baseColor} !important;
-    font-family: 'Inter', sans-serif !important;
-    line-height: 1.6 !important;
-    margin: 0 !important;
+  background-image:
+    radial-gradient(ellipse at top left, ${accentColor}22 0%, transparent 50%),
+    radial-gradient(ellipse at bottom right, ${accentColor}11 0%, transparent 50%) !important;
+  background-attachment: fixed !important;
+  margin: 0 !important;
 }
 
-div, section, article, nav, header, footer, aside, main {
-    background: rgba(255, 255, 255, 0.03) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    border-radius: 8px !important;
-    padding: 15px !important;
-    margin-bottom: 15px !important;
+h1, h2, h3 {
+  color: ${accentColor} !important;
+  font-weight: 700 !important;
+  text-shadow: 0 0 20px ${accentColor}44 !important;
 }
 
-h1, h2, h3, h4, h5, h6 {
-    color: ${accentColor} !important;
-    font-weight: 700 !important;
-    margin: 20px 0 15px !important;
+h4, h5, h6 {
+  color: ${accentColor}cc !important;
+  font-weight: 600 !important;
 }
 
-a {
-    color: ${accentColor} !important;
-    text-decoration: underline !important;
-    transition: all 0.2s !important;
+/* Safe typography color changes without !important or span styling */
+p, li, td, th {
+  color: ${baseColor}cc;
+}
+
+a, a:visited {
+  color: ${accentColor} !important;
+  text-decoration: none !important;
+  transition: all 0.2s ease !important;
 }
 
 a:hover {
-    text-shadow: 0 0 8px ${accentColor}80 !important;
+  color: #fff !important;
+  text-shadow: 0 0 12px ${accentColor}aa !important;
 }
 
-button, input[type="submit"] {
-    background: ${accentColor} !important;
-    color: ${bgColor} !important;
-    border: none !important;
-    padding: 10px 20px !important;
-    border-radius: 6px !important;
-    font-weight: 600 !important;
-    cursor: pointer !important;
-    transition: all 0.2s !important;
+button,
+input[type="submit"],
+input[type="button"],
+input[type="reset"] {
+  background: linear-gradient(135deg, ${accentColor}, ${accentColor}bb) !important;
+  color: #fff !important;
+  border: 1px solid ${accentColor}88 !important;
+  border-radius: 6px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
 }
 
 button:hover {
-    transform: translateY(-2px) !important;
-    box-shadow: 0 4px 12px ${accentColor}50 !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 20px ${accentColor}50 !important;
+  filter: brightness(1.15) !important;
 }
 
-input, textarea, select {
-    background: rgba(255, 255, 255, 0.05) !important;
-    color: ${baseColor} !important;
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
-    padding: 8px 12px !important;
-    border-radius: 4px !important;
+input:not([type="submit"]):not([type="button"]):not([type="checkbox"]):not([type="radio"]),
+textarea, select {
+  background: rgba(255, 255, 255, 0.05) !important;
+  color: ${baseColor} !important;
+  border: 1px solid ${accentColor}44 !important;
+  border-radius: 4px !important;
+  outline: none !important;
 }
 
-input:focus, textarea:focus {
-    border-color: ${accentColor} !important;
-    outline: none !important;
-    box-shadow: 0 0 0 3px ${accentColor}20 !important;
+input:focus, textarea:focus, select:focus {
+  border-color: ${accentColor} !important;
+  box-shadow: 0 0 0 3px ${accentColor}22 !important;
 }
 
-table { width: 100% !important; border-collapse: collapse !important; }
-th, td { padding: 12px !important; border: 1px solid rgba(255, 255, 255, 0.1) !important; }
-th { background: rgba(255, 255, 255, 0.05) !important; font-weight: 600 !important; }
+table { border-collapse: collapse !important; width: 100% !important; }
+th, td { border: 1px solid rgba(255,255,255,0.08) !important; }
+th { color: ${accentColor} !important; font-weight: 600 !important; }
+tr:hover { background: rgba(255,255,255,0.04) !important; }
 
-img { border-radius: 4px !important; box-shadow: 0 2px 8px rgba(0,0,0,0.2) !important; }
+img {
+  border-radius: 6px !important;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.3) !important;
+  filter: brightness(0.95) !important;
+}
+
+.card, .box, .widget, [role="dialog"] {
+  background: rgba(255,255,255,0.04) !important;
+  border: 1px solid ${accentColor}33 !important;
+  border-radius: 10px !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2) !important;
+}
+
+::-webkit-scrollbar { width: 8px !important; background: ${bgColor} !important; }
+::-webkit-scrollbar-thumb { background: ${accentColor}66 !important; border-radius: 4px !important; }
+::-webkit-scrollbar-thumb:hover { background: ${accentColor} !important; }
+
+::selection { background: ${accentColor}66 !important; color: #fff !important; }
+
+@keyframes accentGlow {
+  0%, 100% { text-shadow: 0 0 10px ${accentColor}44; }
+  50% { text-shadow: 0 0 25px ${accentColor}88, 0 0 40px ${accentColor}33; }
+}
+
+h1 { animation: accentGlow 3s ease-in-out infinite !important; }
 `;
 
     return NextResponse.json({ css });
