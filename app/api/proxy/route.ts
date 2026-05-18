@@ -254,8 +254,21 @@ function getProxyOrigin(request: NextRequest): string {
     return `${proto}://${host}`;
 }
 
+import { rateLimit, getClientIP } from '../rate-limit';
+
 // POST Handler (Used for AI Themes + Standard)
 export async function POST(request: NextRequest) {
+    // Apply rate limit
+    const clientIP = getClientIP(request);
+    const { success, retryAfter } = rateLimit(clientIP, 60, 60_000);
+    
+    if (!success) {
+        return NextResponse.json(
+            { error: `Rate limit exceeded. Try again in ${retryAfter}s.` },
+            { status: 429, headers: { 'Retry-After': String(retryAfter) } }
+        );
+    }
+
     try {
         const body = await request.json();
         console.log('📥 POST /api/proxy received:', JSON.stringify(body, null, 2));
@@ -277,6 +290,17 @@ export async function POST(request: NextRequest) {
 
 // GET Handler (Used for all iframe src= requests, including AI themes via cssToken)
 export async function GET(request: NextRequest) {
+    // Apply rate limit
+    const clientIP = getClientIP(request);
+    const { success, retryAfter } = rateLimit(clientIP, 60, 60_000);
+    
+    if (!success) {
+        return NextResponse.json(
+            { error: `Rate limit exceeded. Try again in ${retryAfter}s.` },
+            { status: 429, headers: { 'Retry-After': String(retryAfter) } }
+        );
+    }
+
     const searchParams = request.nextUrl.searchParams;
     const url = searchParams.get('url');
     const theme = searchParams.get('theme');
