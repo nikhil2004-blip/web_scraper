@@ -1,61 +1,23 @@
 'use client';
 
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { UrlInput } from '@/components/UrlInput';
 import { ThemeSelector } from '@/components/ThemeSelector';
 import { PreviewFrame } from '@/components/PreviewFrame';
 import { InteractiveBackground } from '@/components/InteractiveBackground';
 import { AiThemeInput } from '@/components/AiThemeInput';
+import CursorFX from '@/components/CursorFX';
 import axios from 'axios';
-import { 
-  Sparkles, Zap, Code, Github, Wand2, CheckCircle2, ArrowRight, 
-  Volume2, VolumeX, Eye, Edit2, Play, Square, Settings2, Sliders, 
-  Globe, RefreshCw, Palette, ChevronRight, HelpCircle, ArrowUpRight,
-  Info, ShoppingCart, Star, Heart, MessageSquare, Monitor, Tablet, Smartphone, Terminal, Volume,
-  Moon, Sun
+import {
+  Sparkles, Wand2, CheckCircle2,
+  Settings2, Sliders,
+  Globe, Palette,
+  Monitor, Terminal,
+  Moon, Sun, X
 } from 'lucide-react';
 
-// === AUDIO SYNTHESIZER ===
-const playSound = (type: 'click' | 'success' | 'sweep') => {
-  try {
-    const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-    
-    if (type === 'click') {
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(600, ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(300, ctx.currentTime + 0.1);
-      gain.gain.setValueAtTime(0.1, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
-      osc.start();
-      osc.stop(ctx.currentTime + 0.1);
-    } else if (type === 'success') {
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(400, ctx.currentTime);
-      osc.frequency.setValueAtTime(600, ctx.currentTime + 0.1);
-      gain.gain.setValueAtTime(0, ctx.currentTime);
-      gain.gain.linearRampToValueAtTime(0.1, ctx.currentTime + 0.05);
-      gain.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.3);
-      osc.start();
-      osc.stop(ctx.currentTime + 0.3);
-    } else if (type === 'sweep') {
-      osc.type = 'triangle';
-      osc.frequency.setValueAtTime(200, ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(800, ctx.currentTime + 0.2);
-      gain.gain.setValueAtTime(0.05, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.2);
-      osc.start();
-      osc.stop(ctx.currentTime + 0.2);
-    }
-  } catch(e) {
-    // Ignore audio errors
-  }
-};
+
 
 export default function Home() {
   const [url, setUrl] = useState('');
@@ -69,23 +31,33 @@ export default function Home() {
 
   // Workbench States
   const [uiTheme, setUiTheme] = useState<'dark' | 'light'>('dark');
-  const [soundEnabled, setSoundEnabled] = useState(true);
   const [borderRadius, setBorderRadius] = useState(12);
   const [contrast, setContrast] = useState(100);
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
-  // Mock Portals
+  // Quick-access Test Portals
   const portals = [
     { name: 'Wikipedia', url: 'https://en.wikipedia.org/wiki/Design', icon: <Globe size={14} /> },
     { name: 'Hacker News', url: 'https://news.ycombinator.com/', icon: <Terminal size={14} /> },
-    { name: 'Example Store', url: 'https://fakestoreapi.com/products', icon: <ShoppingCart size={14} /> }
   ];
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', uiTheme);
   }, [uiTheme]);
 
+  // ESC key exits fullscreen; F key enters fullscreen when a preview is active
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isFullscreen) setIsFullscreen(false);
+      if (e.key === 'f' && !isFullscreen && proxyUrl && document.activeElement?.tagName !== 'INPUT' && document.activeElement?.tagName !== 'TEXTAREA') {
+        setIsFullscreen(true);
+      }
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [isFullscreen, proxyUrl]);
+
   const showToast = (msg: string) => {
-    if (soundEnabled) playSound('success');
     setToast(msg);
     if (toastTimer.current) clearTimeout(toastTimer.current);
     toastTimer.current = setTimeout(() => setToast(null), 3500);
@@ -93,9 +65,9 @@ export default function Home() {
 
   useEffect(() => () => { if (toastTimer.current) clearTimeout(toastTimer.current); }, []);
 
+
   const handleApply = async () => {
     if (!url) return;
-    if (soundEnabled) playSound('sweep');
     setLoading(true);
     setError(null);
     setProxyUrl(null);
@@ -132,12 +104,9 @@ export default function Home() {
     }
   };
 
-  const interact = useCallback(() => {
-    if (soundEnabled) playSound('click');
-  }, [soundEnabled]);
-
   return (
     <main className="h-screen w-full flex overflow-hidden bg-background text-foreground transition-colors duration-300 relative selection:bg-primary/30">
+      <CursorFX />
       <div className="absolute inset-0 z-0">
         <InteractiveBackground />
       </div>
@@ -165,14 +134,7 @@ export default function Home() {
           </div>
           <div className="flex gap-2">
             <button 
-              onClick={() => { setSoundEnabled(!soundEnabled); interact(); }}
-              className="p-2 rounded-md hover:bg-surface-container transition-colors text-outline hover:text-on-surface"
-              title="Toggle UI Sounds"
-            >
-              {soundEnabled ? <Volume2 size={16} /> : <VolumeX size={16} />}
-            </button>
-            <button 
-              onClick={() => { setUiTheme(uiTheme === 'dark' ? 'light' : 'dark'); interact(); }}
+              onClick={() => setUiTheme(uiTheme === 'dark' ? 'light' : 'dark')}
               className="p-2 rounded-md hover:bg-surface-container transition-colors text-outline hover:text-on-surface"
               title="Toggle Light/Dark Mode"
             >
@@ -187,7 +149,7 @@ export default function Home() {
             <h3 className="text-xs font-semibold text-outline uppercase tracking-widest flex items-center gap-2">
               <Wand2 size={14} /> AI Compiler
             </h3>
-            <div onClick={interact}>
+            <div>
               <AiThemeInput onGenerate={handleAiGenerate} />
             </div>
             <AnimatePresence>
@@ -212,8 +174,8 @@ export default function Home() {
             <h3 className="text-xs font-semibold text-outline uppercase tracking-widest flex items-center gap-2">
               <Palette size={14} /> Built-in Presets
             </h3>
-            <div onClick={interact} className="w-full">
-              <ThemeSelector value={theme} onChange={(val) => { setTheme(val); setAiCss(null); interact(); }} />
+            <div className="w-full">
+              <ThemeSelector value={theme} onChange={(val) => { setTheme(val); setAiCss(null); }} />
             </div>
           </section>
 
@@ -232,7 +194,6 @@ export default function Home() {
                 <input 
                   type="range" min="0" max="32" value={borderRadius}
                   onChange={(e) => setBorderRadius(Number(e.target.value))}
-                  onMouseUp={interact}
                   className="w-full accent-primary bg-surface-container h-1 rounded-full appearance-none outline-none"
                 />
               </div>
@@ -245,7 +206,6 @@ export default function Home() {
                 <input 
                   type="range" min="50" max="150" value={contrast}
                   onChange={(e) => setContrast(Number(e.target.value))}
-                  onMouseUp={interact}
                   className="w-full accent-primary bg-surface-container h-1 rounded-full appearance-none outline-none"
                 />
               </div>
@@ -260,7 +220,7 @@ export default function Home() {
         
         {/* Topbar URL & Portals */}
         <div className="p-4 md:p-6 bg-surface-container-lowest/40 backdrop-blur-md border-b border-outline-variant/20 flex flex-col gap-4 shadow-sm z-20">
-          <div onClick={interact}>
+          <div>
             <UrlInput
               value={url}
               onChange={setUrl}
@@ -276,7 +236,7 @@ export default function Home() {
             {portals.map((portal) => (
               <button
                 key={portal.name}
-                onClick={() => { setUrl(portal.url); interact(); }}
+                onClick={() => setUrl(portal.url)}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-surface-container/50 border border-outline-variant/30 hover:border-primary/50 hover:bg-primary/10 transition-all text-xs text-on-surface-variant hover:text-primary whitespace-nowrap"
               >
                 {portal.icon}
@@ -290,7 +250,7 @@ export default function Home() {
         <div className="flex-1 p-4 md:p-6 overflow-hidden flex flex-col items-center justify-center bg-transparent z-10 relative">
           <AnimatePresence mode="wait">
             {!proxyUrl && !loading ? (
-              <motion.div 
+              <motion.div
                 key="idle"
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -306,18 +266,85 @@ export default function Home() {
                 </div>
               </motion.div>
             ) : (
-              <motion.div
+              // ⚠️ Plain div — NOT a motion.div — so the fixed fullscreen overlay
+              // inside PreviewFrame is NOT trapped in a transform stacking context.
+              // framer-motion transforms on parent elements break fixed positioning.
+              <div
                 key="preview-frame"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="w-full h-full rounded-2xl overflow-hidden border border-outline-variant/40 shadow-[0_30px_100px_-20px_rgba(0,0,0,0.5)] bg-white relative z-10"
+                className="w-full h-full rounded-2xl overflow-hidden border border-outline-variant/40 shadow-[0_30px_100px_-20px_rgba(0,0,0,0.5)] bg-gray-950"
               >
-                <PreviewFrame proxyUrl={proxyUrl} loading={loading} error={error} />
-              </motion.div>
+                <PreviewFrame
+                  proxyUrl={proxyUrl}
+                  loading={loading}
+                  error={error}
+                  isFullscreen={isFullscreen}
+                  onEnterFullscreen={() => setIsFullscreen(true)}
+                />
+              </div>
             )}
           </AnimatePresence>
         </div>
       </div>
+
+      {/* ── FULLSCREEN OVERLAY ── Rendered at root level in <main>, outside all
+           motion.div transform contexts. This is the ONLY way fixed positioning
+           reliably covers the entire viewport including the sidebar. */}
+      <AnimatePresence>
+        {isFullscreen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.15 }}
+            className="fixed inset-0 z-[9999] flex flex-col bg-gray-950"
+          >
+            {/* Fullscreen Header */}
+            <div className="flex-shrink-0 bg-gray-900 border-b border-white/10 px-6 py-3 flex items-center gap-4">
+              <div className="flex gap-2">
+                <div className="w-3 h-3 rounded-full bg-red-500/80" />
+                <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
+                <div className="w-3 h-3 rounded-full bg-green-500/80" />
+              </div>
+              <div className="flex-1 bg-black/20 rounded-lg px-3 py-1.5 text-center text-xs text-gray-400 font-mono">
+                🔒 webskin-proxy · Fullscreen Mode
+              </div>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setIsFullscreen(false)}
+                className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/10 hover:bg-red-500/20 text-gray-300 hover:text-red-400 transition-all text-xs font-medium border border-white/10"
+              >
+                <X size={14} />
+                <span>Exit Fullscreen</span>
+                <kbd className="ml-1 px-1.5 py-0.5 rounded bg-white/10 text-[10px] font-mono text-gray-500">ESC</kbd>
+              </motion.button>
+            </div>
+
+            {/* Fullscreen iframe */}
+            <div className="flex-1 relative overflow-hidden">
+              <iframe
+                key={proxyUrl}
+                src={proxyUrl || undefined}
+                style={{ width: '100%', height: '100%', border: 'none' }}
+                sandbox="allow-same-origin allow-scripts allow-forms allow-popups"
+                title="Preview Fullscreen"
+              />
+              {/* Floating exit pill always visible in preview area */}
+              <motion.button
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+                onClick={() => setIsFullscreen(false)}
+                className="absolute top-4 right-4 z-50 flex items-center gap-2 px-3 py-2 rounded-full bg-gray-900/80 backdrop-blur-md text-white text-xs font-medium border border-white/20 hover:bg-red-900/70 hover:border-red-500/40 transition-all shadow-xl"
+              >
+                <X size={12} />
+                Exit
+                <kbd className="px-1.5 py-0.5 rounded bg-white/10 text-[10px] font-mono text-gray-400">ESC</kbd>
+              </motion.button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </main>
   );
 }

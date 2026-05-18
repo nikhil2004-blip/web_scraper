@@ -1,16 +1,52 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Groq from 'groq-sdk';
+import { rateLimit, getClientIP } from '../rate-limit';
+
+// Security headers applied to all responses from this route
+const SECURITY_HEADERS = {
+  'X-Content-Type-Options': 'nosniff',
+  'X-Frame-Options': 'DENY',
+  'Cache-Control': 'no-store',
+};
 
 export async function POST(request: NextRequest) {
+  // ── Rate limiting: 10 requests per 60 seconds per IP ─────────────────────
+  const clientIP = getClientIP(request);
+  const { success, retryAfter, remaining } = rateLimit(clientIP, 10, 60_000);
+
+  if (!success) {
+    return NextResponse.json(
+      { error: `Rate limit exceeded. Please wait ${retryAfter}s before trying again.` },
+      { status: 429, headers: { ...SECURITY_HEADERS, 'Retry-After': String(retryAfter) } }
+    );
+  }
+
+  // ── Input size guard (prevent prompt injection / abuse) ───────────────────
+  const contentLength = Number(request.headers.get('content-length') || 0);
+  if (contentLength > 4096) {
+    return NextResponse.json(
+      { error: 'Request body too large.' },
+      { status: 413, headers: SECURITY_HEADERS }
+    );
+  }
+
     let body: { prompt?: string };
     let userPrompt: string = '';
 
     try {
         body = await request.json();
-        userPrompt = body.prompt || '';
+        // Sanitize: strip HTML/script tags, trim whitespace, enforce max length
+        userPrompt = (body.prompt || '')
+            .replace(/<[^>]*>/g, '')  // strip HTML
+            .replace(/[<>"'`]/g, '')  // strip template injection chars
+            .trim()
+            .slice(0, 500);           // max 500 chars
 
         if (!userPrompt) {
-            return NextResponse.json({ error: 'Prompt is required' }, { status: 400 });
+            return NextResponse.json(
+              { error: 'Prompt is required' },
+              { status: 400, headers: SECURITY_HEADERS }
+            );
         }
 
         const apiKey = process.env.GROQ_API_KEY;
